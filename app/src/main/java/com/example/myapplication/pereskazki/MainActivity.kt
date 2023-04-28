@@ -4,17 +4,13 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Random
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val phrases = arrayOf(
-        "Самолет иди в поход",
-        "Сергей теплоход налей",
-        "Вика вкусная клубника",
-        "Розовый слоник летит к небу",
-        "Мыши кричат в траве",
-        "Жаба прыгает на гриб"
-    )
+    private var phrases = emptyArray<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,12 +19,30 @@ class MainActivity : AppCompatActivity() {
         // Получаем ссылку на TextView
         val textView = findViewById<TextView>(R.id.textView)
 
+        // Загружаем фразы из файла
+        loadPhrasesFromFile()
+
+        // Если savedInstanceState не равен null, восстанавливаем сохраненное значение текста в TextView
+        if (savedInstanceState != null) {
+            textView.text = savedInstanceState.getString("text")
+        } else {
+            // Получаем случайную фразу и устанавливаем её в TextView
+            val randomPhrase = getRandomPhrase()
+            textView.text = randomPhrase
+        }
+
         // Добавляем слушатель нажатия на весь макет
         val layout = findViewById<LinearLayout>(R.id.layout)
         layout.setOnClickListener {
-            // Изменяем текст в TextView
+            // Изменяем текст в TextView на новую случайную фразу
             textView.text = getRandomPhrase()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Сохраняем текущий текст в TextView в Bundle
+        outState.putString("text", findViewById<TextView>(R.id.textView).text.toString())
     }
 
     private fun getRandomPhrase(): String {
@@ -38,5 +52,22 @@ class MainActivity : AppCompatActivity() {
 
         // Возвращаем случайную фразу из массива строк phrases
         return phrases[index]
+    }
+
+    private fun loadPhrasesFromFile() {
+        // Открываем файл phrases.txt из папки assets и читаем его содержимое в массив строк phrases
+        try {
+            val inputStream = assets.open("phrases.txt")
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val list = mutableListOf<String>()
+            var line: String? = reader.readLine()
+            while (line != null) {
+                list.add(line)
+                line = reader.readLine()
+            }
+            phrases = list.toTypedArray()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 }

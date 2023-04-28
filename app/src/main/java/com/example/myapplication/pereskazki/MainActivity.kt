@@ -8,6 +8,7 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
+import com.example.utils.splitIntoSyllables
 
 class MainActivity : AppCompatActivity() {
     private var phrases = emptyArray<String>()
@@ -45,14 +46,26 @@ class MainActivity : AppCompatActivity() {
         outState.putString("text", findViewById<TextView>(R.id.textView).text.toString())
     }
 
-    private fun getRandomPhrase(): String {
+      private fun getRandomPhrase(): String {
         // Генерируем случайный индекс из массива строк phrases
         val random = Random()
         val index = random.nextInt(phrases.size)
 
-        // Возвращаем случайную фразу из массива строк phrases
-        return phrases[index]
+      // Возвращаем случайную фразу из массива строк phrases
+       return phrases[index]
     }
+
+    //private fun getRandomPhrase(): String {
+      //  // Генерируем случайный индекс из массива строк phrases
+        //val random = Random()
+        //val index = random.nextInt(phrases.size)
+
+        // Разбиваем случайную фразу на слова и выводим каждое слово по слогам
+        //val words = phrases[index].split(" ")
+        //val syllables = words.map { splitIntoSyllables(it) }
+        //return syllables.joinToString(separator = " ") { it.joinToString(separator = "-") }
+    //}
+
 
     private fun loadPhrasesFromFile() {
         // Открываем файл phrases.txt из папки assets и читаем его содержимое в массив строк phrases

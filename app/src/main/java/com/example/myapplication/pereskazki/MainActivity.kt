@@ -108,10 +108,10 @@ class MainActivity : AppCompatActivity() {
         // Создаем BufferedReader для чтения из InputStream
         val reader = BufferedReader(InputStreamReader(inputStream))
 
-        // Создаем список для хранения блоков текста
+// Создаем список для хранения блоков текста
         val blocks = mutableListOf<String>()
 
-        // Читаем строки из файла и добавляем их в соответствующий блок текста
+// Читаем строки из файла и добавляем их в соответствующий блок текста
         try {
             var block = ""
             var line = reader.readLine()
@@ -133,16 +133,26 @@ class MainActivity : AppCompatActivity() {
             if (block.isNotEmpty()) {
                 blocks.add(block)
             }
+            // Проверяем список blocks. Если он состоит из одного блока, разбиваем его на список блоков
+            if (blocks.size == 1) {
+                val singleBlock = blocks[0]
+                val singleBlockLines = singleBlock.trim().split("\n")
+                blocks.clear()
+                for (line in singleBlockLines) {
+                    blocks.add("$line\n")
+                }
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         } finally {
             reader.close()
         }
 
-        // Сохраняем массив блоков текста в соответствующее свойство
+// Сохраняем массив блоков текста в соответствующее свойство
         when (filename) {
             "phrases.txt" -> phrases = blocks.toTypedArray()
             "skoromovki.txt" -> skoromovki = blocks.toTypedArray()
         }
+
     }
 }

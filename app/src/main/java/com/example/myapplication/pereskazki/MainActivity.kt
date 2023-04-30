@@ -14,6 +14,8 @@ import com.example.utils.splitIntoSyllables
 import java.io.File
 import java.io.InputStream
 
+
+
 class MainActivity : AppCompatActivity() {
     private var phrases = emptyArray<String>()
     private var skoromovki = emptyArray<String>()
@@ -35,10 +37,8 @@ class MainActivity : AppCompatActivity() {
         // Загружаем фразы из файла phrases.txt
         loadPhrasesFromFile("phrases.txt")
 
-
         // Загружаем фразы из файла skoromovki.txt
         loadPhrasesFromFile("skoromovki.txt")
-
 
         button1.setOnClickListener {
             // Скрываем кнопки
@@ -49,12 +49,25 @@ class MainActivity : AppCompatActivity() {
             val randomPhrase = getRandomPhrase()
             textView.text = randomPhrase
 
-            // Добавляем слушатель нажатия на весь макет
+            // Добавляем слушатель свайпа на весь макет
             val layout = findViewById<LinearLayout>(R.id.layout)
-            layout.setOnClickListener {
-                // Изменяем текст в TextView на новую случайную фразу
-                textView.text = getRandomPhrase()
-            }
+            layout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+                override fun onSwipeLeft() {
+                    button1.visibility = View.GONE
+                    button2.visibility = View.GONE
+
+                    textView.visibility = View.VISIBLE
+                    textView.text = getRandomPhrase()
+                }
+
+                override fun onSwipeRight() {
+                    // Показываем кнопки
+                    button1.visibility = View.VISIBLE
+                    button2.visibility = View.VISIBLE
+                    // Скрываем текст
+                    textView.visibility = View.GONE
+                }
+            })
         }
 
         button2.setOnClickListener {
@@ -62,18 +75,33 @@ class MainActivity : AppCompatActivity() {
             button1.visibility = View.GONE
             button2.visibility = View.GONE
 
-            // Получаем случайную фразу и устанавливаем её в TextView
+            // Получаем случайную скоромовку и устанавливаем её в TextView
             val randomSkoromovka = getRandomSkoromovka()
             textView.text = randomSkoromovka
 
-            // Добавляем слушатель нажатия на весь макет
+            // Добавляем слушатель свайпа на весь макет
             val layout = findViewById<LinearLayout>(R.id.layout)
-            layout.setOnClickListener {
-                // Изменяем текст в TextView на новую случайную скоромовку
-                textView.text = getRandomSkoromovka()
-            }
+            layout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+                override fun onSwipeLeft() {
+                    //кнопки
+                    button1.visibility = View.GONE
+                    button2.visibility = View.GONE
+                    // текст
+                    textView.visibility = View.VISIBLE
+                    textView.text = getRandomSkoromovka()
+                }
+
+                override fun onSwipeRight() {
+                    // Показываем кнопки
+                    button1.visibility = View.VISIBLE
+                    button2.visibility = View.VISIBLE
+                    // Скрываем текст
+                    textView.visibility = View.GONE
+                }
+            })
         }
     }
+
 
 
     override fun onSaveInstanceState(outState: Bundle) {

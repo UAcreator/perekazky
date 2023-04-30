@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">pereskazki</string>
+    <string name="app_name">perekazky</string>
+    <string name="menu_phrases">ПРИКАЗКИ</string>
+    <string name="menu_tongue_twisters">СКОРОМОВКИ</string>
 </resources>

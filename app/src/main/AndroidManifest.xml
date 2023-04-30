@@ -13,6 +13,7 @@
         android:theme="@style/Theme.Pereskazki"
         tools:targetApi="31">
         <activity
+            android:configChanges="orientation|screenSize"
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/AppTheme">

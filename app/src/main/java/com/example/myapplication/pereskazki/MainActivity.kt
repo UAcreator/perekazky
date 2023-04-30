@@ -1,6 +1,7 @@
 package com.example.myapplication.pereskazki
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -8,37 +9,72 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
+import android.view.View
 import com.example.utils.splitIntoSyllables
+import java.io.File
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
     private var phrases = emptyArray<String>()
+    private var skoromovki = emptyArray<String>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Получаем ссылку на TextView
+        // Получаем ссылки на элементы UI
         val textView = findViewById<TextView>(R.id.textView)
+        val button1 = findViewById<Button>(R.id.button1)
+        val button2 = findViewById<Button>(R.id.button2)
 
-        // Загружаем фразы из файла
-        loadPhrasesFromFile()
+        // Устанавливаем текст кнопок
+        button1.text = "ПРИКАЗКИ"
+        button2.text = "СКОРОМОВКИ"
 
-        // Если savedInstanceState не равен null, восстанавливаем сохраненное значение текста в TextView
-        if (savedInstanceState != null) {
-            textView.text = savedInstanceState.getString("text")
-        } else {
+        // Загружаем фразы из файла phrases.txt
+        loadPhrasesFromFile("phrases.txt")
+
+
+        // Загружаем фразы из файла skoromovki.txt
+        loadPhrasesFromFile("skoromovki.txt")
+
+
+        button1.setOnClickListener {
+            // Скрываем кнопки
+            button1.visibility = View.GONE
+            button2.visibility = View.GONE
+
             // Получаем случайную фразу и устанавливаем её в TextView
             val randomPhrase = getRandomPhrase()
             textView.text = randomPhrase
+
+            // Добавляем слушатель нажатия на весь макет
+            val layout = findViewById<LinearLayout>(R.id.layout)
+            layout.setOnClickListener {
+                // Изменяем текст в TextView на новую случайную фразу
+                textView.text = getRandomPhrase()
+            }
         }
 
-        // Добавляем слушатель нажатия на весь макет
-        val layout = findViewById<LinearLayout>(R.id.layout)
-        layout.setOnClickListener {
-            // Изменяем текст в TextView на новую случайную фразу
-            textView.text = getRandomPhrase()
+        button2.setOnClickListener {
+            // Скрываем кнопки
+            button1.visibility = View.GONE
+            button2.visibility = View.GONE
+
+            // Получаем случайную фразу и устанавливаем её в TextView
+            val randomSkoromovka = getRandomSkoromovka()
+            textView.text = randomSkoromovka
+
+            // Добавляем слушатель нажатия на весь макет
+            val layout = findViewById<LinearLayout>(R.id.layout)
+            layout.setOnClickListener {
+                // Изменяем текст в TextView на новую случайную скоромовку
+                textView.text = getRandomSkoromovka()
+            }
         }
     }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -46,41 +82,67 @@ class MainActivity : AppCompatActivity() {
         outState.putString("text", findViewById<TextView>(R.id.textView).text.toString())
     }
 
-      private fun getRandomPhrase(): String {
-        // Генерируем случайный индекс из массива строк phrases
+    private fun getRandomPhrase(): String {
+        // Генерируем случайный индекс из массива блоков текста phrases
         val random = Random()
         val index = random.nextInt(phrases.size)
 
-      // Возвращаем случайную фразу из массива строк phrases
-       return phrases[index]
+        // Возвращаем случайный блок текста из массива блоков текста phrases
+        return phrases[index]
     }
 
-    //private fun getRandomPhrase(): String {
-      //  // Генерируем случайный индекс из массива строк phrases
-        //val random = Random()
-        //val index = random.nextInt(phrases.size)
+    private fun getRandomSkoromovka(): String {
+        // Генерируем случайный индекс из массива блоков текста skoromovki
+        val random = Random()
+        val index = random.nextInt(skoromovki.size)
 
-        // Разбиваем случайную фразу на слова и выводим каждое слово по слогам
-        //val words = phrases[index].split(" ")
-        //val syllables = words.map { splitIntoSyllables(it) }
-        //return syllables.joinToString(separator = " ") { it.joinToString(separator = "-") }
-    //}
+        // Возвращаем случайный блок текста из массива блоков текста skoromovki
+        return skoromovki[index]
+    }
 
 
-    private fun loadPhrasesFromFile() {
-        // Открываем файл phrases.txt из папки assets и читаем его содержимое в массив строк phrases
+    private fun loadPhrasesFromFile(filename: String) {
+        // Получаем InputStream из файла с заданным именем
+        val inputStream = assets.open(filename)
+
+        // Создаем BufferedReader для чтения из InputStream
+        val reader = BufferedReader(InputStreamReader(inputStream))
+
+        // Создаем список для хранения блоков текста
+        val blocks = mutableListOf<String>()
+
+        // Читаем строки из файла и добавляем их в соответствующий блок текста
         try {
-            val inputStream = assets.open("phrases.txt")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val list = mutableListOf<String>()
-            var line: String? = reader.readLine()
+            var block = ""
+            var line = reader.readLine()
             while (line != null) {
-                list.add(line)
+                if (line.isNotEmpty()) {
+                    // Добавляем строку в текущий блок текста
+                    block += line + "\n"
+                } else {
+                    // Добавляем текущий блок текста в список, если он не пустой
+                    if (block.isNotEmpty()) {
+                        blocks.add(block)
+                    }
+                    // Создаем новый блок текста
+                    block = ""
+                }
                 line = reader.readLine()
             }
-            phrases = list.toTypedArray()
+            // Добавляем последний блок текста в список, если он не пустой
+            if (block.isNotEmpty()) {
+                blocks.add(block)
+            }
         } catch (e: IOException) {
             e.printStackTrace()
+        } finally {
+            reader.close()
+        }
+
+        // Сохраняем массив блоков текста в соответствующее свойство
+        when (filename) {
+            "phrases.txt" -> phrases = blocks.toTypedArray()
+            "skoromovki.txt" -> skoromovki = blocks.toTypedArray()
         }
     }
 }

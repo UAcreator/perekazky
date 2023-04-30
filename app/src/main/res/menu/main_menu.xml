@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_phrases"
+        android:icon="@drawable/ic_phrases"
+        android:title="@string/menu_phrases"/>
+    <item
+        android:id="@+id/menu_tongue_twisters"
+        android:icon="@drawable/ic_skoromovki"
+        android:title="@string/menu_tongue_twisters"/>
+</menu>

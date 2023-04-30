@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
             // Получаем случайную фразу и устанавливаем её в TextView
             val randomPhrase = getRandomPhrase()
             textView.text = randomPhrase
+            textView.visibility = View.VISIBLE
 
             // Добавляем слушатель свайпа на весь макет
             val layout = findViewById<LinearLayout>(R.id.layout)
@@ -75,9 +76,11 @@ class MainActivity : AppCompatActivity() {
             button1.visibility = View.GONE
             button2.visibility = View.GONE
 
+
             // Получаем случайную скоромовку и устанавливаем её в TextView
             val randomSkoromovka = getRandomSkoromovka()
             textView.text = randomSkoromovka
+            textView.visibility = View.VISIBLE
 
             // Добавляем слушатель свайпа на весь макет
             val layout = findViewById<LinearLayout>(R.id.layout)

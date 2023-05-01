@@ -7,28 +7,25 @@
     android:orientation="vertical"
     android:background="#060927">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/button1"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:textColor="#060927"
+        android:text="Кнопка 1" />
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#8F8F8F"
-            android:textColor="#060927"
-            android:text="Кнопка 1" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"/>
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#8F8F8F"
-            android:textColor="#060927"
-            android:text="Кнопка 2" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/button2"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#060927"
+        android:text="Кнопка 2" />
 
     <TextView
         android:id="@+id/textView"

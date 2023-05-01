@@ -22,12 +22,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textView: TextView
     private lateinit var button1: Button
     private lateinit var button2: Button
-    private lateinit var swipeListener: OnSwipeTouchListener
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        swipeListener = OnSwipeTouchListener(this)
+
 
         textView = findViewById(R.id.textView)
         button1 = findViewById(R.id.button1)
@@ -47,8 +47,27 @@ class MainActivity : AppCompatActivity() {
             textView.text = randomPhrase
             textView.visibility = View.VISIBLE
 
-            swipeListener = OnSwipeTouchListener(this)
+            // Включаем слушатель свайпа на весь макет
+            textView.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+                override fun onSwipeLeft() {
+                    // обработчик свайпа влево
+                    button1.visibility = View.VISIBLE
+                    button2.visibility = View.VISIBLE
+                    textView.visibility = View.GONE
+                    textView.setOnTouchListener(null)
+                }
+
+                override fun onSwipeRight() {
+                    // обработчик свайпа вправо
+                    val randomPhrase = getRandomPhrase()
+                    textView.text = randomPhrase
+                    button1.visibility = View.GONE
+                    button2.visibility = View.GONE
+                    textView.visibility = View.VISIBLE
+                }
+            })
         }
+
 
         button2.setOnClickListener {
             button1.visibility = View.GONE
@@ -58,10 +77,27 @@ class MainActivity : AppCompatActivity() {
             textView.text = randomSkoromovka
             textView.visibility = View.VISIBLE
 
-            swipeListener = OnSwipeTouchListener(this)
-        }
+            // Включаем слушатель свайпа на весь макет
+            textView.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+                override fun onSwipeLeft() {
+                    // обработчик свайпа влево
+                    button1.visibility = View.VISIBLE
+                    button2.visibility = View.VISIBLE
+                    textView.visibility = View.GONE
+                    textView.setOnTouchListener(null)
+                }
 
-        textView.setOnTouchListener(swipeListener)
+                override fun onSwipeRight() {
+                    // обработчик свайпа вправо
+                    val randomSkoromovka = getRandomSkoromovka()
+                    textView.text = randomSkoromovka
+                    button1.visibility = View.GONE
+                    button2.visibility = View.GONE
+                    textView.visibility = View.VISIBLE
+                }
+            })
+
+        }
     }
 
 

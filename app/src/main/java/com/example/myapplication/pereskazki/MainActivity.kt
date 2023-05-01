@@ -14,97 +14,55 @@ import com.example.utils.splitIntoSyllables
 import java.io.File
 import java.io.InputStream
 
-
+import com.example.utils.OnSwipeTouchListener
+import com.example.utils.OnSwipeTouchListener
 
 class MainActivity : AppCompatActivity() {
     private var phrases = emptyArray<String>()
     private var skoromovki = emptyArray<String>()
-
+    private lateinit var textView: TextView
+    private lateinit var button1: Button
+    private lateinit var button2: Button
+    private lateinit var swipeListener: setupSwipeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Получаем ссылки на элементы UI
-        val textView = findViewById<TextView>(R.id.textView)
-        val button1 = findViewById<Button>(R.id.button1)
-        val button2 = findViewById<Button>(R.id.button2)
+        textView = findViewById(R.id.textView)
+        button1 = findViewById(R.id.button1)
+        button2 = findViewById(R.id.button2)
 
-        // Устанавливаем текст кнопок
         button1.text = "ПРИКАЗКИ"
         button2.text = "СКОРОМОВКИ"
 
-        // Загружаем фразы из файла phrases.txt
         loadPhrasesFromFile("phrases.txt")
-
-        // Загружаем фразы из файла skoromovki.txt
         loadPhrasesFromFile("skoromovki.txt")
 
         button1.setOnClickListener {
-            // Скрываем кнопки
             button1.visibility = View.GONE
             button2.visibility = View.GONE
 
-            // Получаем случайную фразу и устанавливаем её в TextView
             val randomPhrase = getRandomPhrase()
             textView.text = randomPhrase
             textView.visibility = View.VISIBLE
 
-            // Добавляем слушатель свайпа на весь макет
-            val layout = findViewById<LinearLayout>(R.id.layout)
-            layout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onSwipeLeft() {
-                    button1.visibility = View.GONE
-                    button2.visibility = View.GONE
-
-                    textView.visibility = View.VISIBLE
-                    textView.text = getRandomPhrase()
-                }
-
-                override fun onSwipeRight() {
-                    // Показываем кнопки
-                    button1.visibility = View.VISIBLE
-                    button2.visibility = View.VISIBLE
-                    // Скрываем текст
-                    textView.visibility = View.GONE
-                }
-            })
+            swipeListener = setupSwipeListener(this)
+            swipeListener.setupSwipeListener()
         }
 
         button2.setOnClickListener {
-            // Скрываем кнопки
             button1.visibility = View.GONE
             button2.visibility = View.GONE
 
-
-            // Получаем случайную скоромовку и устанавливаем её в TextView
             val randomSkoromovka = getRandomSkoromovka()
             textView.text = randomSkoromovka
             textView.visibility = View.VISIBLE
 
-            // Добавляем слушатель свайпа на весь макет
-            val layout = findViewById<LinearLayout>(R.id.layout)
-            layout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onSwipeLeft() {
-                    //кнопки
-                    button1.visibility = View.GONE
-                    button2.visibility = View.GONE
-                    // текст
-                    textView.visibility = View.VISIBLE
-                    textView.text = getRandomSkoromovka()
-                }
-
-                override fun onSwipeRight() {
-                    // Показываем кнопки
-                    button1.visibility = View.VISIBLE
-                    button2.visibility = View.VISIBLE
-                    // Скрываем текст
-                    textView.visibility = View.GONE
-                }
-            })
+            swipeListener = setupSwipeListener(this)
+            swipeListener.setupSwipeListener()
         }
     }
-
 
 
     override fun onSaveInstanceState(outState: Bundle) {

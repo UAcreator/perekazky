@@ -48,7 +48,8 @@ class MainActivity : AppCompatActivity() {
             textView.visibility = View.VISIBLE
 
             // Включаем слушатель свайпа на весь макет
-            textView.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+            val mainLayout = findViewById<LinearLayout>(R.id.layout)
+            mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
                 override fun onSwipeLeft() {
                     // обработчик свайпа влево
                     button1.visibility = View.VISIBLE
@@ -78,7 +79,8 @@ class MainActivity : AppCompatActivity() {
             textView.visibility = View.VISIBLE
 
             // Включаем слушатель свайпа на весь макет
-            textView.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+            val mainLayout = findViewById<LinearLayout>(R.id.layout)
+            mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
                 override fun onSwipeLeft() {
                     // обработчик свайпа влево
                     button1.visibility = View.VISIBLE

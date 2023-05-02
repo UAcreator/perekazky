@@ -50,15 +50,15 @@ class MainActivity : AppCompatActivity() {
             // Включаем слушатель свайпа на весь макет
             val mainLayout = findViewById<LinearLayout>(R.id.layout)
             mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onSwipeLeft() {
+                override fun onSwipeRight() {
                     // обработчик свайпа влево
                     button1.visibility = View.VISIBLE
                     button2.visibility = View.VISIBLE
                     textView.visibility = View.GONE
-                    textView.setOnTouchListener(null)
+                    mainLayout.setOnTouchListener(null)
                 }
 
-                override fun onSwipeRight() {
+                override fun onSwipeLeft() {
                     // обработчик свайпа вправо
                     val randomPhrase = getRandomPhrase()
                     textView.text = randomPhrase
@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
-
 
         button2.setOnClickListener {
             button1.visibility = View.GONE
@@ -81,15 +80,15 @@ class MainActivity : AppCompatActivity() {
             // Включаем слушатель свайпа на весь макет
             val mainLayout = findViewById<LinearLayout>(R.id.layout)
             mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onSwipeLeft() {
+                override fun onSwipeRight() {
                     // обработчик свайпа влево
                     button1.visibility = View.VISIBLE
                     button2.visibility = View.VISIBLE
                     textView.visibility = View.GONE
-                    textView.setOnTouchListener(null)
+                    mainLayout.setOnTouchListener(null)
                 }
 
-                override fun onSwipeRight() {
+                override fun onSwipeLeft() {
                     // обработчик свайпа вправо
                     val randomSkoromovka = getRandomSkoromovka()
                     textView.text = randomSkoromovka
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -126,7 +124,6 @@ class MainActivity : AppCompatActivity() {
         // Возвращаем случайный блок текста из массива блоков текста skoromovki
         return skoromovki[index]
     }
-
 
     private fun loadPhrasesFromFile(filename: String) {
         // Получаем InputStream из файла с заданным именем

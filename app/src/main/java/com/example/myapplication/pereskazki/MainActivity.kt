@@ -1,6 +1,10 @@
 package com.example.myapplication.pereskazki
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.text.Layout
+import android.text.StaticLayout
+import android.util.TypedValue
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,35 +17,38 @@ import android.view.View
 import com.example.utils.splitIntoSyllables
 import java.io.File
 import java.io.InputStream
-
+import android.graphics.Paint
+import android.text.TextPaint
 import com.example.utils.OnSwipeTouchListener
+
 
 class MainActivity : AppCompatActivity() {
     private var phrases = emptyArray<String>()
     private var skoromovki = emptyArray<String>()
+    private var abetka = emptyArray<String>()
     private lateinit var textView: TextView
     private lateinit var button1: Button
     private lateinit var button2: Button
-
+    private lateinit var button3: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
         textView = findViewById(R.id.textView)
         button1 = findViewById(R.id.button1)
         button2 = findViewById(R.id.button2)
-
+        button3 = findViewById(R.id.button3)
         button1.text = "ПРИКАЗКИ"
         button2.text = "СКОРОМОВКИ"
-
+        button3.text = "АБЕТКА"
         loadPhrasesFromFile("phrases.txt")
         loadPhrasesFromFile("skoromovki.txt")
+        loadPhrasesFromFile("abetka.txt")
 
         button1.setOnClickListener {
             button1.visibility = View.GONE
             button2.visibility = View.GONE
+            button3.visibility = View.GONE
 
             val randomPhrase = getRandomPhrase()
             textView.text = randomPhrase
@@ -54,6 +61,7 @@ class MainActivity : AppCompatActivity() {
                     // обработчик свайпа влево
                     button1.visibility = View.VISIBLE
                     button2.visibility = View.VISIBLE
+                    button3.visibility = View.VISIBLE
                     textView.visibility = View.GONE
                     mainLayout.setOnTouchListener(null)
                 }
@@ -64,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                     textView.text = randomPhrase
                     button1.visibility = View.GONE
                     button2.visibility = View.GONE
+                    button3.visibility = View.GONE
                     textView.visibility = View.VISIBLE
                 }
             })
@@ -72,6 +81,7 @@ class MainActivity : AppCompatActivity() {
         button2.setOnClickListener {
             button1.visibility = View.GONE
             button2.visibility = View.GONE
+            button3.visibility = View.GONE
 
             val randomSkoromovka = getRandomSkoromovka()
             textView.text = randomSkoromovka
@@ -84,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                     // обработчик свайпа влево
                     button1.visibility = View.VISIBLE
                     button2.visibility = View.VISIBLE
+                    button3.visibility = View.VISIBLE
                     textView.visibility = View.GONE
                     mainLayout.setOnTouchListener(null)
                 }
@@ -94,12 +105,47 @@ class MainActivity : AppCompatActivity() {
                     textView.text = randomSkoromovka
                     button1.visibility = View.GONE
                     button2.visibility = View.GONE
+                    button3.visibility = View.GONE
                     textView.visibility = View.VISIBLE
                 }
             })
+        }
 
+        button3.setOnClickListener {
+            button1.visibility = View.GONE
+            button2.visibility = View.GONE
+            button3.visibility = View.GONE
+
+            //текст, который вы хотите вывести на экран
+            val randomAbetka = getRandomAbetka()
+            textView.text = randomAbetka
+            textView.visibility = View.VISIBLE
+
+            val mainLayout = findViewById<LinearLayout>(R.id.layout)
+            mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+                override fun onSwipeRight() {
+                    // обработчик свайпа влево
+                    button1.visibility = View.VISIBLE
+                    button2.visibility = View.VISIBLE
+                    button3.visibility = View.VISIBLE
+                    textView.visibility = View.GONE
+                    mainLayout.setOnTouchListener(null)
+                }
+
+                override fun onSwipeLeft() {
+                    // обработчик свайпа вправо
+                    val randomAbetka = getRandomAbetka()
+                    textView.text = randomAbetka
+                    button1.visibility = View.GONE
+                    button2.visibility = View.GONE
+                    button3.visibility = View.GONE
+                    textView.visibility = View.VISIBLE
+                }
+            })
         }
     }
+
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -124,6 +170,15 @@ class MainActivity : AppCompatActivity() {
         // Возвращаем случайный блок текста из массива блоков текста skoromovki
         return skoromovki[index]
     }
+    private fun getRandomAbetka(): String {
+        // Генерируем случайный индекс из массива блоков текста skoromovki
+        val random = Random()
+        val index = random.nextInt(abetka.size)
+
+        // Возвращаем случайный блок текста из массива блоков текста skoromovki
+        return abetka[index]
+    }
+
 
     private fun loadPhrasesFromFile(filename: String) {
         // Получаем InputStream из файла с заданным именем
@@ -176,7 +231,7 @@ class MainActivity : AppCompatActivity() {
         when (filename) {
             "phrases.txt" -> phrases = blocks.toTypedArray()
             "skoromovki.txt" -> skoromovki = blocks.toTypedArray()
+            "abetka.txt" -> abetka = blocks.toTypedArray()
         }
-
     }
 }

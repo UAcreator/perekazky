@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
             //текст, который вы хотите вывести на экран
             val randomAbetka = getRandomAbetka()
-            textView.text = randomAbetka
+            setTextViewText(textView, randomAbetka)
             textView.visibility = View.VISIBLE
 
             val mainLayout = findViewById<LinearLayout>(R.id.layout)
@@ -144,6 +144,29 @@ class MainActivity : AppCompatActivity() {
             })
         }
     }
+    private fun setTextViewText(textView: TextView, text: String) {
+            // Получаем размер текста в пикселях
+            val textSize = textView.paint.measureText(text)
+
+            // Получаем ширину экрана
+            val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+
+            // Вычисляем соотношение ширины текста к ширине экрана
+            val textWidthRatio = textSize / screenWidth
+
+            // Получаем текущий размер шрифта
+            val originalTextSize = textView.textSize
+
+            // Если соотношение больше 1, то текст не влезает на экран
+            if (textWidthRatio > 1) {
+                // Уменьшаем размер текста на соответствующий коэффициент
+                val textSizeRatio = 3 / textWidthRatio
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
+            }
+            // Устанавливаем текст в TextView
+            textView.text = text
+    }
+
 
 
 

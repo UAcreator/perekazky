@@ -21,6 +21,7 @@ import android.view.View
 //import android.text.TextPaint
 import android.util.Log
 import com.example.utils.OnSwipeTouchListener
+import android.graphics.Color
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,29 +44,69 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setTextViewText(textView: TextView, text: String) {
-        textView.textSize = 32f
+        val holoLightColors = intArrayOf(
+            Color.parseColor("#ffec407a"), // Red
+            Color.parseColor("#fffce100"), // Yellow
+            Color.parseColor("#ff0099cc"), // Blue
+            Color.parseColor("#ff669900"), // Green
+            Color.parseColor("#ffff9800"), // Orange
+            Color.parseColor("#ff3f51b5"), // Indigo
+            Color.parseColor("#ff9c27b0"), // Purple
+            Color.parseColor("#ff4caf50") // Green
+        )
         // Разбиваем текст на строки
         val lines = text.split("\n")
-        // Находим максимальную ширину строки
-        val maxLineWidth = lines.maxOfOrNull { line ->
-            textView.paint.measureText(line)
-        } ?: return // В случае, если строки нет, завершаем метод
-        // Получаем ширину экрана
-        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-        // Вычисляем соотношение максимальной ширины строки к ширине экрана
-        val textWidthRatio = maxLineWidth / screenWidth
-        Log.d("FONT_SIZE", "Screen width is ${screenWidth}px")
-        Log.d("FONT_SIZE", "Max line width is ${maxLineWidth}px")
-        // Если соотношение больше 1, то текст не влезает на экран
-        if (textWidthRatio > 1) {
-            // Уменьшаем размер текста на соответствующий коэффициент
-            val textSizeRatio = 1 / textWidthRatio
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
+        if (lines.isNotEmpty() && lines[0].length == 2) {
+            // Если первая строка состоит из 2 символов, изменяем ее размер и цвет
+            textView.textSize = 42f
+            textView.setTextColor(holoLightColors.random())
+            // Устанавливаем первую строку без переноса
+            textView.text = lines[0]
+            for (i in 1 until lines.size) {
+                // Добавляем остальные строки, вписывая их по ширине экрана без переноса
+                val currentText = textView.text.toString()
+                val newText = if (currentText.isEmpty()) {
+                    lines[i]
+                } else {
+                    currentText + "\n" + lines[i]
+                }
+                textView.text = newText
+                val currentLineWidth = textView.paint.measureText(lines[i])
+                if (currentLineWidth > textView.width) {
+                    // Уменьшаем размер текста до тех пор, пока строка не влезет по ширине экрана
+                    var textSize = textView.textSize
+                    while (textView.paint.measureText(lines[i]) > textView.width) {
+                        textSize -= 1f
+                        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+                    }
+                }
+            }
+        } else {
+            // Если первая строка состоит из более чем 2 символов, обрабатываем и выводим как и раньше
+            textView.textSize = 50f
+            // Находим максимальную ширину строки
+            val maxLineWidth = lines.maxOfOrNull { line ->
+                textView.paint.measureText(line)
+            } ?: return // В случае, если строки нет, завершаем метод
+            // Получаем ширину экрана
+            val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+            // Вычисляем соотношение максимальной ширины строки к ширине экрана
+            val textWidthRatio = maxLineWidth / screenWidth
+            Log.d("FONT_SIZE", "Screen width is ${screenWidth}px")
+            Log.d("FONT_SIZE", "Max line width is ${maxLineWidth}px")
+            // Если соотношение больше 1, то текст не влезает на экран
+            if (textWidthRatio > 1) {
+                // Уменьшаем размер текста на соответствующий коэффициент
+                val textSizeRatio = 1 / textWidthRatio
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
+            }
+            // Устанавливаем текст в TextView
+            textView.text = text
+            Log.d("FONT_SIZE", "Font size in setTextViewText is ${textView.textSize}")
         }
-        // Устанавливаем текст в TextView
-        textView.text = text
-        Log.d("FONT_SIZE", "Font size in setTextViewText is ${textView.textSize}")
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

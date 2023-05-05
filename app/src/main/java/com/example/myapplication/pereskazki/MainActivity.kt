@@ -2,8 +2,8 @@ package com.example.myapplication.pereskazki
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.text.Layout
-import android.text.StaticLayout
+//import android.text.Layout
+//import android.text.StaticLayout
 import android.util.TypedValue
 import android.widget.Button
 import android.widget.LinearLayout
@@ -14,11 +14,11 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
 import android.view.View
-import com.example.utils.splitIntoSyllables
-import java.io.File
-import java.io.InputStream
-import android.graphics.Paint
-import android.text.TextPaint
+//import com.example.utils.splitIntoSyllables
+//import java.io.File
+//import java.io.InputStream
+//import android.graphics.Paint
+//import android.text.TextPaint
 import android.util.Log
 import com.example.utils.OnSwipeTouchListener
 
@@ -32,52 +32,34 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button2: Button
     private lateinit var button3: Button
 
-
     fun setTextViewText(textView: TextView, text: String) {
         textView.textSize = 32f
         // Разбиваем текст на строки
         val lines = text.split("\n")
-
         // Находим максимальную ширину строки
         val maxLineWidth = lines.maxOfOrNull { line ->
             textView.paint.measureText(line)
         } ?: return // В случае, если строки нет, завершаем метод
-
         // Получаем ширину экрана
         val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-
         // Вычисляем соотношение максимальной ширины строки к ширине экрана
         val textWidthRatio = maxLineWidth / screenWidth
-
         Log.d("FONT_SIZE", "Screen width is ${screenWidth}px")
         Log.d("FONT_SIZE", "Max line width is ${maxLineWidth}px")
-
         // Если соотношение больше 1, то текст не влезает на экран
         if (textWidthRatio > 1) {
             // Уменьшаем размер текста на соответствующий коэффициент
             val textSizeRatio = 1 / textWidthRatio
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
         }
-
         // Устанавливаем текст в TextView
         textView.text = text
-
         Log.d("FONT_SIZE", "Font size in setTextViewText is ${textView.textSize}")
     }
-
-
-
-
-
-
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         textView = findViewById(R.id.textView)
-        //textView.textSize = 24f
         button1 = findViewById(R.id.button1)
         button2 = findViewById(R.id.button2)
         button3 = findViewById(R.id.button3)
@@ -152,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         button3.visibility = View.GONE
 
         val randomSkoromovka = getRandomSkoromovka()
-        textView.text = randomSkoromovka
+        val textSize = setTextViewText(textView,randomSkoromovka)
         Log.d("FONT_SIZE", "Font size in handleButton1Click 2 is ${textView.textSize}")
         textView.visibility = View.VISIBLE
 
@@ -165,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                 button2.visibility = View.VISIBLE
                 button3.visibility = View.VISIBLE
                 textView.visibility = View.GONE
+                textView.textSize = 32f
                 mainLayout.setOnTouchListener(null)
                 Log.d("FONT_SIZE", "Font size in handleButton1Click 2 onSwipeRight is ${textView.textSize}")
             }
@@ -172,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSwipeLeft() {
                 // обработчик свайпа вправо
                 val randomSkoromovka = getRandomSkoromovka()
-                textView.text = randomSkoromovka
+                val textSize = setTextViewText(textView, randomSkoromovka)
                 Log.d("FONT_SIZE", "Font size in handleButton1Click 2 onSwipeLeft is ${textView.textSize}")
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
@@ -191,7 +174,6 @@ class MainActivity : AppCompatActivity() {
 
         val randomAbetka = getRandomAbetka()
         val textSize = setTextViewText(textView, randomAbetka)
-        //textView.textSize = textSize
         Log.d("FONT_SIZE", "Font size after setTextViewText 3 is ${textView.textSize}")
         textView.visibility = View.VISIBLE
 
@@ -212,7 +194,6 @@ class MainActivity : AppCompatActivity() {
                 // Обработчик свайпа вправо
                 val randomAbetka = getRandomAbetka()
                 val textSize = setTextViewText(textView, randomAbetka)
-                //textView.textSize = textSize
                 Log.d("FONT_SIZE", "Font size in handleButton1Click 3 onSwipeLeft is ${textView.textSize}")
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE

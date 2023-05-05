@@ -19,6 +19,7 @@ import java.io.File
 import java.io.InputStream
 import android.graphics.Paint
 import android.text.TextPaint
+import android.util.Log
 import com.example.utils.OnSwipeTouchListener
 
 
@@ -31,10 +32,52 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button2: Button
     private lateinit var button3: Button
 
+
+    fun setTextViewText(textView: TextView, text: String) {
+        textView.textSize = 32f
+        // Разбиваем текст на строки
+        val lines = text.split("\n")
+
+        // Находим максимальную ширину строки
+        val maxLineWidth = lines.maxOfOrNull { line ->
+            textView.paint.measureText(line)
+        } ?: return // В случае, если строки нет, завершаем метод
+
+        // Получаем ширину экрана
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+
+        // Вычисляем соотношение максимальной ширины строки к ширине экрана
+        val textWidthRatio = maxLineWidth / screenWidth
+
+        Log.d("FONT_SIZE", "Screen width is ${screenWidth}px")
+        Log.d("FONT_SIZE", "Max line width is ${maxLineWidth}px")
+
+        // Если соотношение больше 1, то текст не влезает на экран
+        if (textWidthRatio > 1) {
+            // Уменьшаем размер текста на соответствующий коэффициент
+            val textSizeRatio = 1 / textWidthRatio
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
+        }
+
+        // Устанавливаем текст в TextView
+        textView.text = text
+
+        Log.d("FONT_SIZE", "Font size in setTextViewText is ${textView.textSize}")
+    }
+
+
+
+
+
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         textView = findViewById(R.id.textView)
+        //textView.textSize = 24f
         button1 = findViewById(R.id.button1)
         button2 = findViewById(R.id.button2)
         button3 = findViewById(R.id.button3)
@@ -44,129 +87,140 @@ class MainActivity : AppCompatActivity() {
         loadPhrasesFromFile("phrases.txt")
         loadPhrasesFromFile("skoromovki.txt")
         loadPhrasesFromFile("abetka.txt")
+        textView.visibility = View.GONE
 
+        // Обработчик нажатия на кнопку 1
         button1.setOnClickListener {
-            button1.visibility = View.GONE
-            button2.visibility = View.GONE
-            button3.visibility = View.GONE
-
-            val randomPhrase = getRandomPhrase()
-            textView.text = randomPhrase
-            textView.visibility = View.VISIBLE
-
-            // Включаем слушатель свайпа на весь макет
-            val mainLayout = findViewById<LinearLayout>(R.id.layout)
-            mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onSwipeRight() {
-                    // обработчик свайпа влево
-                    button1.visibility = View.VISIBLE
-                    button2.visibility = View.VISIBLE
-                    button3.visibility = View.VISIBLE
-                    textView.visibility = View.GONE
-                    mainLayout.setOnTouchListener(null)
-                }
-
-                override fun onSwipeLeft() {
-                    // обработчик свайпа вправо
-                    val randomPhrase = getRandomPhrase()
-                    textView.text = randomPhrase
-                    button1.visibility = View.GONE
-                    button2.visibility = View.GONE
-                    button3.visibility = View.GONE
-                    textView.visibility = View.VISIBLE
-                }
-            })
+            // Вызываем функцию для обработки нажатия на кнопку 1
+            handleButton1Click()
         }
 
+        // Обработчик нажатия на кнопку 2
         button2.setOnClickListener {
-            button1.visibility = View.GONE
-            button2.visibility = View.GONE
-            button3.visibility = View.GONE
-
-            val randomSkoromovka = getRandomSkoromovka()
-            textView.text = randomSkoromovka
-            textView.visibility = View.VISIBLE
-
-            // Включаем слушатель свайпа на весь макет
-            val mainLayout = findViewById<LinearLayout>(R.id.layout)
-            mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onSwipeRight() {
-                    // обработчик свайпа влево
-                    button1.visibility = View.VISIBLE
-                    button2.visibility = View.VISIBLE
-                    button3.visibility = View.VISIBLE
-                    textView.visibility = View.GONE
-                    mainLayout.setOnTouchListener(null)
-                }
-
-                override fun onSwipeLeft() {
-                    // обработчик свайпа вправо
-                    val randomSkoromovka = getRandomSkoromovka()
-                    textView.text = randomSkoromovka
-                    button1.visibility = View.GONE
-                    button2.visibility = View.GONE
-                    button3.visibility = View.GONE
-                    textView.visibility = View.VISIBLE
-                }
-            })
+            // Вызываем функцию для обработки нажатия на кнопку 2
+            handleButton2Click()
         }
 
+        // Обработчик нажатия на кнопку 3
         button3.setOnClickListener {
-            button1.visibility = View.GONE
-            button2.visibility = View.GONE
-            button3.visibility = View.GONE
-
-            //текст, который вы хотите вывести на экран
-            val randomAbetka = getRandomAbetka()
-            setTextViewText(textView, randomAbetka)
-            textView.visibility = View.VISIBLE
-
-            val mainLayout = findViewById<LinearLayout>(R.id.layout)
-            mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
-                override fun onSwipeRight() {
-                    // обработчик свайпа влево
-                    button1.visibility = View.VISIBLE
-                    button2.visibility = View.VISIBLE
-                    button3.visibility = View.VISIBLE
-                    textView.visibility = View.GONE
-                    mainLayout.setOnTouchListener(null)
-                }
-
-                override fun onSwipeLeft() {
-                    // обработчик свайпа вправо
-                    val randomAbetka = getRandomAbetka()
-                    textView.text = randomAbetka
-                    button1.visibility = View.GONE
-                    button2.visibility = View.GONE
-                    button3.visibility = View.GONE
-                    textView.visibility = View.VISIBLE
-                }
-            })
+            // Вызываем функцию для обработки нажатия на кнопку 3
+            handleButton3Click()
         }
     }
-    private fun setTextViewText(textView: TextView, text: String) {
-            // Получаем размер текста в пикселях
-            val textSize = textView.paint.measureText(text)
 
-            // Получаем ширину экрана
-            val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-
-            // Вычисляем соотношение ширины текста к ширине экрана
-            val textWidthRatio = textSize / screenWidth
-
-            // Получаем текущий размер шрифта
-            val originalTextSize = textView.textSize
-
-            // Если соотношение больше 1, то текст не влезает на экран
-            if (textWidthRatio > 1) {
-                // Уменьшаем размер текста на соответствующий коэффициент
-                val textSizeRatio = 3 / textWidthRatio
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
+    private fun handleButton1Click() {
+        // Обработка нажатия на кнопку 1
+        button1.visibility = View.GONE
+        button2.visibility = View.GONE
+        button3.visibility = View.GONE
+        val randomPhrase = getRandomPhrase()
+        textView.text = randomPhrase
+        Log.d("FONT_SIZE", "Font size in handleButton1Click 1 is ${textView.textSize}")
+        textView.visibility = View.VISIBLE
+        // Включаем слушатель свайпа на весь макет
+        val mainLayout = findViewById<LinearLayout>(R.id.layout)
+        mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+            override fun onSwipeRight() {
+                // обработчик свайпа влево
+                button1.visibility = View.VISIBLE
+                button2.visibility = View.VISIBLE
+                button3.visibility = View.VISIBLE
+                textView.visibility = View.GONE
+                mainLayout.setOnTouchListener(null)
+                Log.d("FONT_SIZE", "Font size in handleButton1Click 1 onSwipeRight is ${textView.textSize}")
             }
-            // Устанавливаем текст в TextView
-            textView.text = text
+
+            override fun onSwipeLeft() {
+                // обработчик свайпа вправо
+                val randomPhrase = getRandomPhrase()
+                textView.text = randomPhrase
+                Log.d("FONT_SIZE", "Font size in handleButton1Click 1 onSwipeLeft is ${textView.textSize}")
+                button1.visibility = View.GONE
+                button2.visibility = View.GONE
+                button3.visibility = View.GONE
+                textView.visibility = View.VISIBLE
+            }
+        })
+
+
     }
 
+    private fun handleButton2Click() {
+        // Обработка нажатия на кнопку 2
+        button1.visibility = View.GONE
+        button2.visibility = View.GONE
+        button3.visibility = View.GONE
+
+        val randomSkoromovka = getRandomSkoromovka()
+        textView.text = randomSkoromovka
+        Log.d("FONT_SIZE", "Font size in handleButton1Click 2 is ${textView.textSize}")
+        textView.visibility = View.VISIBLE
+
+        // Включаем слушатель свайпа на весь макет
+        val mainLayout = findViewById<LinearLayout>(R.id.layout)
+        mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+            override fun onSwipeRight() {
+                // обработчик свайпа влево
+                button1.visibility = View.VISIBLE
+                button2.visibility = View.VISIBLE
+                button3.visibility = View.VISIBLE
+                textView.visibility = View.GONE
+                mainLayout.setOnTouchListener(null)
+                Log.d("FONT_SIZE", "Font size in handleButton1Click 2 onSwipeRight is ${textView.textSize}")
+            }
+
+            override fun onSwipeLeft() {
+                // обработчик свайпа вправо
+                val randomSkoromovka = getRandomSkoromovka()
+                textView.text = randomSkoromovka
+                Log.d("FONT_SIZE", "Font size in handleButton1Click 2 onSwipeLeft is ${textView.textSize}")
+                button1.visibility = View.GONE
+                button2.visibility = View.GONE
+                button3.visibility = View.GONE
+                textView.visibility = View.VISIBLE
+            }
+        })
+    }
+
+    private fun handleButton3Click() {
+        button1.visibility = View.GONE
+        button2.visibility = View.GONE
+        button3.visibility = View.GONE
+        Log.d("FONT_SIZE", "Font size in handleButton1Click 3 before randomAbetka is ${textView.textSize}")
+
+
+        val randomAbetka = getRandomAbetka()
+        val textSize = setTextViewText(textView, randomAbetka)
+        //textView.textSize = textSize
+        Log.d("FONT_SIZE", "Font size after setTextViewText 3 is ${textView.textSize}")
+        textView.visibility = View.VISIBLE
+
+        val mainLayout = findViewById<LinearLayout>(R.id.layout)
+        mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+            override fun onSwipeRight() {
+                // Обработчик свайпа влево
+                button1.visibility = View.VISIBLE
+                button2.visibility = View.VISIBLE
+                button3.visibility = View.VISIBLE
+                textView.visibility = View.GONE
+                textView.textSize = 32f
+                mainLayout.setOnTouchListener(null)
+                Log.d("FONT_SIZE", "Font size in handleButton1Click 3 onSwipeRight is ${textView.textSize}")
+            }
+
+            override fun onSwipeLeft() {
+                // Обработчик свайпа вправо
+                val randomAbetka = getRandomAbetka()
+                val textSize = setTextViewText(textView, randomAbetka)
+                //textView.textSize = textSize
+                Log.d("FONT_SIZE", "Font size in handleButton1Click 3 onSwipeLeft is ${textView.textSize}")
+                button1.visibility = View.GONE
+                button2.visibility = View.GONE
+                button3.visibility = View.GONE
+                textView.visibility = View.VISIBLE
+            }
+        })
+    }
 
 
 

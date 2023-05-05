@@ -31,6 +31,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button1: Button
     private lateinit var button2: Button
     private lateinit var button3: Button
+    private lateinit var mainLayout: LinearLayout
+
+    override fun onBackPressed() {
+        button1.visibility = View.VISIBLE
+        button2.visibility = View.VISIBLE
+        button3.visibility = View.VISIBLE
+        textView.visibility = View.GONE
+        textView.textSize = 32f
+        mainLayout.setOnTouchListener(null)
+    }
 
     fun setTextViewText(textView: TextView, text: String) {
         textView.textSize = 32f
@@ -66,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         button1.text = "ПРИКАЗКИ"
         button2.text = "СКОРОМОВКИ"
         button3.text = "АБЕТКА"
+        mainLayout = findViewById(R.id.layout)
         loadPhrasesFromFile("phrases.txt")
         loadPhrasesFromFile("skoromovki.txt")
         loadPhrasesFromFile("abetka.txt")
@@ -88,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             // Вызываем функцию для обработки нажатия на кнопку 3
             handleButton3Click()
         }
+
     }
 
     private fun handleButton1Click() {

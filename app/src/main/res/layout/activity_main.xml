@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="-50dp"
         android:textColor="@android:color/white"
-        android:textSize="80sp"
+        android:textSize="100sp"
         android:gravity="center_horizontal|top"
         android:orientation="vertical" />
 
@@ -62,7 +62,7 @@
         android:layout_marginTop="0dp"
         android:textColor="@android:color/white"
         android:background="@android:color/background_dark"
-        android:textSize="32sp"
+        android:textSize="42sp"
         android:gravity="center"
         android:orientation="vertical" />
 </LinearLayout>

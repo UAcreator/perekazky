@@ -2,8 +2,6 @@ package com.example.myapplication.pereskazki
 
 import android.content.res.Resources
 import android.os.Bundle
-//import android.text.Layout
-//import android.text.StaticLayout
 import android.util.TypedValue
 import android.widget.Button
 import android.widget.LinearLayout
@@ -14,14 +12,11 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
 import android.view.View
-//import com.example.utils.splitIntoSyllables
-//import java.io.File
-//import java.io.InputStream
-//import android.graphics.Paint
-//import android.text.TextPaint
 import android.util.Log
 import com.example.utils.OnSwipeTouchListener
 import android.graphics.Color
+import android.graphics.Typeface
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,88 +24,17 @@ class MainActivity : AppCompatActivity() {
     private var skoromovki = emptyArray<String>()
     private var abetka = emptyArray<String>()
     private lateinit var textView: TextView
+    private lateinit var textView2: TextView //для Бб укв абетки
     private lateinit var button1: Button
     private lateinit var button2: Button
     private lateinit var button3: Button
     private lateinit var mainLayout: LinearLayout
 
-    override fun onBackPressed() {
-        button1.visibility = View.VISIBLE
-        button2.visibility = View.VISIBLE
-        button3.visibility = View.VISIBLE
-        textView.visibility = View.GONE
-        textView.textSize = 32f
-        mainLayout.setOnTouchListener(null)
-    }
-
-    fun setTextViewText(textView: TextView, text: String) {
-        val holoLightColors = intArrayOf(
-            Color.parseColor("#ffec407a"), // Red
-            Color.parseColor("#fffce100"), // Yellow
-            Color.parseColor("#ff0099cc"), // Blue
-            Color.parseColor("#ff669900"), // Green
-            Color.parseColor("#ffff9800"), // Orange
-            Color.parseColor("#ff3f51b5"), // Indigo
-            Color.parseColor("#ff9c27b0"), // Purple
-            Color.parseColor("#ff4caf50") // Green
-        )
-        // Разбиваем текст на строки
-        val lines = text.split("\n")
-        if (lines.isNotEmpty() && lines[0].length == 2) {
-            // Если первая строка состоит из 2 символов, изменяем ее размер и цвет
-            textView.textSize = 42f
-            textView.setTextColor(holoLightColors.random())
-            // Устанавливаем первую строку без переноса
-            textView.text = lines[0]
-            for (i in 1 until lines.size) {
-                // Добавляем остальные строки, вписывая их по ширине экрана без переноса
-                val currentText = textView.text.toString()
-                val newText = if (currentText.isEmpty()) {
-                    lines[i]
-                } else {
-                    currentText + "\n" + lines[i]
-                }
-                textView.text = newText
-                val currentLineWidth = textView.paint.measureText(lines[i])
-                if (currentLineWidth > textView.width) {
-                    // Уменьшаем размер текста до тех пор, пока строка не влезет по ширине экрана
-                    var textSize = textView.textSize
-                    while (textView.paint.measureText(lines[i]) > textView.width) {
-                        textSize -= 1f
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-                    }
-                }
-            }
-        } else {
-            // Если первая строка состоит из более чем 2 символов, обрабатываем и выводим как и раньше
-            textView.textSize = 50f
-            // Находим максимальную ширину строки
-            val maxLineWidth = lines.maxOfOrNull { line ->
-                textView.paint.measureText(line)
-            } ?: return // В случае, если строки нет, завершаем метод
-            // Получаем ширину экрана
-            val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-            // Вычисляем соотношение максимальной ширины строки к ширине экрана
-            val textWidthRatio = maxLineWidth / screenWidth
-            Log.d("FONT_SIZE", "Screen width is ${screenWidth}px")
-            Log.d("FONT_SIZE", "Max line width is ${maxLineWidth}px")
-            // Если соотношение больше 1, то текст не влезает на экран
-            if (textWidthRatio > 1) {
-                // Уменьшаем размер текста на соответствующий коэффициент
-                val textSizeRatio = 1 / textWidthRatio
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
-            }
-            // Устанавливаем текст в TextView
-            textView.text = text
-            Log.d("FONT_SIZE", "Font size in setTextViewText is ${textView.textSize}")
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         textView = findViewById(R.id.textView)
+        textView2 = findViewById(R.id.textView2)
         button1 = findViewById(R.id.button1)
         button2 = findViewById(R.id.button2)
         button3 = findViewById(R.id.button3)
@@ -122,6 +46,9 @@ class MainActivity : AppCompatActivity() {
         loadPhrasesFromFile("skoromovki.txt")
         loadPhrasesFromFile("abetka.txt")
         textView.visibility = View.GONE
+        textView2.visibility = View.GONE
+        val typeface = Typeface.createFromAsset(assets, "Lobster.ttf")
+        textView2.typeface = typeface
 
         // Обработчик нажатия на кнопку 1
         button1.setOnClickListener {
@@ -143,14 +70,90 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onBackPressed() {
+        button1.visibility = View.VISIBLE
+        button2.visibility = View.VISIBLE
+        button3.visibility = View.VISIBLE
+        textView.visibility = View.GONE
+        textView2.visibility = View.GONE
+        textView.textSize = 32f
+        mainLayout.setOnTouchListener(null)
+    }
+
+    fun setTextViewText(textView: TextView, textView2: TextView, text: String) {
+        val holoLightColors = intArrayOf(
+            Color.parseColor("#ffec407a"), // Red
+            Color.parseColor("#fffce100"), // Yellow
+            Color.parseColor("#ff0099cc"), // Blue
+            Color.parseColor("#ff669900"), // Green
+            Color.parseColor("#ffff9800"), // Orange
+            Color.parseColor("#ff3f51b5"), // Indigo
+            Color.parseColor("#ff9c27b0"), // Purple
+            Color.parseColor("#ff4caf50") // Green
+        )
+        textView.text = ""
+        textView2.text = ""
+        // Разбиваем текст на строки
+        val lines = text.split("\n")
+        if (lines.isNotEmpty() && lines[0].length == 2) {
+            textView.textSize = 36f
+            textView2.setTextColor(holoLightColors.random())
+            textView2.text = lines[0]
+            // Находим максимальную ширину строки
+            val maxLineWidth = lines.maxOfOrNull { line ->
+                textView.paint.measureText(line)
+            } ?: return // В случае, если строки нет, завершаем метод
+            // Получаем ширину экрана
+            val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+            // Вычисляем соотношение максимальной ширины строки к ширине экрана
+            val textWidthRatio = maxLineWidth / screenWidth
+            // Если соотношение больше 1, то текст не влезает на экран
+            if (textWidthRatio > 1) {
+                val textSizeRatio = 1 / textWidthRatio
+                val maxTextSize = 36f
+                val newSize = Math.min(textView.textSize * textSizeRatio, maxTextSize)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize)
+            }
+            for (i in 1 until lines.size) {
+                val currentText = textView.text.toString()
+                val newText = if (currentText.isEmpty()) {
+                    lines[i]
+                } else {
+                    currentText + "\n" + lines[i]
+                }
+                textView.text = newText
+            }
+        } else {
+            // Если первая строка состоит из более чем 2 символов, обрабатываем и выводим как и раньше
+            textView.textSize = 36f
+            // Находим максимальную ширину строки
+            val maxLineWidth = lines.maxOfOrNull { line ->
+                textView.paint.measureText(line)
+            } ?: return // В случае, если строки нет, завершаем метод
+            // Получаем ширину экрана
+            val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+            // Вычисляем соотношение максимальной ширины строки к ширине экрана
+            val textWidthRatio = maxLineWidth / screenWidth
+            // Если соотношение больше 1, то текст не влезает на экран
+            if (textWidthRatio > 1) {
+                val textSizeRatio = 1 / textWidthRatio
+                val maxTextSize = 36f
+                val newSize = Math.min(textView.textSize * textSizeRatio, maxTextSize)
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize)
+            }
+            // Устанавливаем текст в TextView
+            textView.text = text
+        }
+    }
+
     private fun handleButton1Click() {
         // Обработка нажатия на кнопку 1
         button1.visibility = View.GONE
         button2.visibility = View.GONE
         button3.visibility = View.GONE
+        textView2.visibility = View.GONE
         val randomPhrase = getRandomPhrase()
         textView.text = randomPhrase
-        Log.d("FONT_SIZE", "Font size in handleButton1Click 1 is ${textView.textSize}")
         textView.visibility = View.VISIBLE
         // Включаем слушатель свайпа на весь макет
         val mainLayout = findViewById<LinearLayout>(R.id.layout)
@@ -162,14 +165,12 @@ class MainActivity : AppCompatActivity() {
                 button3.visibility = View.VISIBLE
                 textView.visibility = View.GONE
                 mainLayout.setOnTouchListener(null)
-                Log.d("FONT_SIZE", "Font size in handleButton1Click 1 onSwipeRight is ${textView.textSize}")
             }
 
             override fun onSwipeLeft() {
                 // обработчик свайпа вправо
                 val randomPhrase = getRandomPhrase()
                 textView.text = randomPhrase
-                Log.d("FONT_SIZE", "Font size in handleButton1Click 1 onSwipeLeft is ${textView.textSize}")
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
                 button3.visibility = View.GONE
@@ -185,10 +186,10 @@ class MainActivity : AppCompatActivity() {
         button1.visibility = View.GONE
         button2.visibility = View.GONE
         button3.visibility = View.GONE
+        textView2.visibility = View.GONE
 
         val randomSkoromovka = getRandomSkoromovka()
-        val textSize = setTextViewText(textView,randomSkoromovka)
-        Log.d("FONT_SIZE", "Font size in handleButton1Click 2 is ${textView.textSize}")
+        val textSize = setTextViewText(textView, textView2, randomSkoromovka)
         textView.visibility = View.VISIBLE
 
         // Включаем слушатель свайпа на весь макет
@@ -202,14 +203,13 @@ class MainActivity : AppCompatActivity() {
                 textView.visibility = View.GONE
                 textView.textSize = 32f
                 mainLayout.setOnTouchListener(null)
-                Log.d("FONT_SIZE", "Font size in handleButton1Click 2 onSwipeRight is ${textView.textSize}")
+
             }
 
             override fun onSwipeLeft() {
                 // обработчик свайпа вправо
                 val randomSkoromovka = getRandomSkoromovka()
-                val textSize = setTextViewText(textView, randomSkoromovka)
-                Log.d("FONT_SIZE", "Font size in handleButton1Click 2 onSwipeLeft is ${textView.textSize}")
+                val textSize = setTextViewText(textView, textView2, randomSkoromovka)
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
                 button3.visibility = View.GONE
@@ -222,12 +222,9 @@ class MainActivity : AppCompatActivity() {
         button1.visibility = View.GONE
         button2.visibility = View.GONE
         button3.visibility = View.GONE
-        Log.d("FONT_SIZE", "Font size in handleButton1Click 3 before randomAbetka is ${textView.textSize}")
-
-
         val randomAbetka = getRandomAbetka()
-        val textSize = setTextViewText(textView, randomAbetka)
-        Log.d("FONT_SIZE", "Font size after setTextViewText 3 is ${textView.textSize}")
+        val textSize = setTextViewText(textView, textView2, randomAbetka)
+        textView2.visibility = View.VISIBLE //Аа Бб Вв
         textView.visibility = View.VISIBLE
 
         val mainLayout = findViewById<LinearLayout>(R.id.layout)
@@ -237,20 +234,20 @@ class MainActivity : AppCompatActivity() {
                 button1.visibility = View.VISIBLE
                 button2.visibility = View.VISIBLE
                 button3.visibility = View.VISIBLE
+                textView2.visibility = View.GONE //Аа Бб Вв
                 textView.visibility = View.GONE
                 textView.textSize = 32f
                 mainLayout.setOnTouchListener(null)
-                Log.d("FONT_SIZE", "Font size in handleButton1Click 3 onSwipeRight is ${textView.textSize}")
             }
 
             override fun onSwipeLeft() {
                 // Обработчик свайпа вправо
                 val randomAbetka = getRandomAbetka()
-                val textSize = setTextViewText(textView, randomAbetka)
-                Log.d("FONT_SIZE", "Font size in handleButton1Click 3 onSwipeLeft is ${textView.textSize}")
+                val textSize = setTextViewText(textView, textView2, randomAbetka)
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
                 button3.visibility = View.GONE
+                textView2.visibility = View.VISIBLE //Аа Бб Вв
                 textView.visibility = View.VISIBLE
             }
         })

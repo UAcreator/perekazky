@@ -23,11 +23,13 @@ class MainActivity : AppCompatActivity() {
     private var phrases = emptyArray<String>()
     private var skoromovki = emptyArray<String>()
     private var abetka = emptyArray<String>()
+    private var zagadky = emptyArray<String>()
     private lateinit var textView: TextView
     private lateinit var textView2: TextView //для Бб укв абетки
     private lateinit var button1: Button
     private lateinit var button2: Button
     private lateinit var button3: Button
+    private lateinit var button4: Button
     private lateinit var mainLayout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,13 +40,16 @@ class MainActivity : AppCompatActivity() {
         button1 = findViewById(R.id.button1)
         button2 = findViewById(R.id.button2)
         button3 = findViewById(R.id.button3)
+        button4 = findViewById(R.id.button4)
         button1.text = "ПРИКАЗКИ"
         button2.text = "СКОРОМОВКИ"
         button3.text = "АБЕТКА"
+        button4.text = "ЗАГАДКИ"
         mainLayout = findViewById(R.id.layout)
         loadPhrasesFromFile("phrases.txt")
         loadPhrasesFromFile("skoromovki.txt")
         loadPhrasesFromFile("abetka.txt")
+        loadPhrasesFromFile("zagadky.txt")
         textView.visibility = View.GONE
         textView2.visibility = View.GONE
         val typeface = Typeface.createFromAsset(assets, "Lobster.ttf")
@@ -68,12 +73,19 @@ class MainActivity : AppCompatActivity() {
             handleButton3Click()
         }
 
+        // Обработчик нажатия на кнопку 4
+        button4.setOnClickListener {
+            // Вызываем функцию для обработки нажатия на кнопку 3
+            handleButton4Click()
+        }
+
     }
 
     override fun onBackPressed() {
         button1.visibility = View.VISIBLE
         button2.visibility = View.VISIBLE
         button3.visibility = View.VISIBLE
+        button4.visibility = View.VISIBLE
         textView.visibility = View.GONE
         textView2.visibility = View.GONE
         textView.textSize = 32f
@@ -138,6 +150,7 @@ class MainActivity : AppCompatActivity() {
         button1.visibility = View.GONE
         button2.visibility = View.GONE
         button3.visibility = View.GONE
+        button4.visibility = View.GONE
         textView2.visibility = View.GONE
         val randomPhrase = getRandomPhrase()
         textView.text = randomPhrase
@@ -150,6 +163,7 @@ class MainActivity : AppCompatActivity() {
                 button1.visibility = View.VISIBLE
                 button2.visibility = View.VISIBLE
                 button3.visibility = View.VISIBLE
+                button4.visibility = View.VISIBLE
                 textView.visibility = View.GONE
                 mainLayout.setOnTouchListener(null)
             }
@@ -162,6 +176,7 @@ class MainActivity : AppCompatActivity() {
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
                 button3.visibility = View.GONE
+                button4.visibility = View.GONE
                 textView.visibility = View.VISIBLE
             }
         })
@@ -174,6 +189,7 @@ class MainActivity : AppCompatActivity() {
         button1.visibility = View.GONE
         button2.visibility = View.GONE
         button3.visibility = View.GONE
+        button4.visibility = View.GONE
         textView2.visibility = View.GONE
 
         val randomSkoromovka = getRandomSkoromovka()
@@ -188,6 +204,7 @@ class MainActivity : AppCompatActivity() {
                 button1.visibility = View.VISIBLE
                 button2.visibility = View.VISIBLE
                 button3.visibility = View.VISIBLE
+                button4.visibility = View.VISIBLE
                 textView.visibility = View.GONE
                 textView.textSize = 32f
                 mainLayout.setOnTouchListener(null)
@@ -201,6 +218,7 @@ class MainActivity : AppCompatActivity() {
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
                 button3.visibility = View.GONE
+                button4.visibility = View.GONE
                 textView.visibility = View.VISIBLE
             }
         })
@@ -210,6 +228,7 @@ class MainActivity : AppCompatActivity() {
         button1.visibility = View.GONE
         button2.visibility = View.GONE
         button3.visibility = View.GONE
+        button4.visibility = View.GONE
         val randomAbetka = getRandomAbetka()
         setTextViewText(textView, textView2, randomAbetka)
         textView2.visibility = View.VISIBLE //Аа Бб Вв
@@ -222,6 +241,7 @@ class MainActivity : AppCompatActivity() {
                 button1.visibility = View.VISIBLE
                 button2.visibility = View.VISIBLE
                 button3.visibility = View.VISIBLE
+                button4.visibility = View.VISIBLE
                 textView2.visibility = View.GONE //Аа Бб Вв
                 textView.visibility = View.GONE
                 textView.textSize = 32f
@@ -235,12 +255,50 @@ class MainActivity : AppCompatActivity() {
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
                 button3.visibility = View.GONE
+                button4.visibility = View.GONE
                 textView2.visibility = View.VISIBLE //Аа Бб Вв
                 textView.visibility = View.VISIBLE
             }
         })
     }
 
+    private fun handleButton4Click() {
+        button1.visibility = View.GONE
+        button2.visibility = View.GONE
+        button3.visibility = View.GONE
+        button4.visibility = View.GONE
+        val randomZagadky = getRandomZagadky()
+        setTextViewText(textView, textView2, randomZagadky)
+        textView2.visibility = View.VISIBLE //Аа Бб Вв
+        textView.visibility = View.VISIBLE
+
+        val mainLayout = findViewById<LinearLayout>(R.id.layout)
+        mainLayout.setOnTouchListener(object : OnSwipeTouchListener(this@MainActivity) {
+            override fun onSwipeRight() {
+                // Обработчик свайпа влево
+                button1.visibility = View.VISIBLE
+                button2.visibility = View.VISIBLE
+                button3.visibility = View.VISIBLE
+                button4.visibility = View.VISIBLE
+                textView2.visibility = View.GONE //Аа Бб Вв
+                textView.visibility = View.GONE
+                textView.textSize = 32f
+                mainLayout.setOnTouchListener(null)
+            }
+
+            override fun onSwipeLeft() {
+                // Обработчик свайпа вправо
+                val randomZagadky = getRandomZagadky()
+                setTextViewText(textView, textView2, randomZagadky)
+                button1.visibility = View.GONE
+                button2.visibility = View.GONE
+                button3.visibility = View.GONE
+                button4.visibility = View.GONE
+                textView2.visibility = View.VISIBLE //Аа Бб Вв
+                textView.visibility = View.VISIBLE
+            }
+        })
+    }
 
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -275,6 +333,14 @@ class MainActivity : AppCompatActivity() {
         return abetka[index]
     }
 
+    private fun getRandomZagadky(): String {
+        // Генерируем случайный индекс из массива блоков текста zagadky
+        val random = Random()
+        val index = random.nextInt(zagadky.size)
+
+        // Возвращаем случайный блок текста из массива блоков текста skoromovki
+        return zagadky[index]
+    }
 
     private fun loadPhrasesFromFile(filename: String) {
         // Получаем InputStream из файла с заданным именем
@@ -328,6 +394,7 @@ class MainActivity : AppCompatActivity() {
             "phrases.txt" -> phrases = blocks.toTypedArray()
             "skoromovki.txt" -> skoromovki = blocks.toTypedArray()
             "abetka.txt" -> abetka = blocks.toTypedArray()
+            "zagadky.txt" -> zagadky = blocks.toTypedArray()
         }
     }
 }

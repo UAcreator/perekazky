@@ -44,6 +44,19 @@
         android:text="Кнопка 3"
         android:textSize="24sp"
         android:backgroundTint="@android:color/holo_orange_light" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="32dp"/>
+
+    <Button
+        android:id="@+id/button4"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_blue"
+        android:text="Кнопка 4"
+        android:textSize="24sp"
+        android:backgroundTint="@android:color/holo_red_light" />
 
     <TextView
         android:id="@+id/textView2"

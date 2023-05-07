@@ -12,7 +12,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
 import android.view.View
-import android.util.Log
+//import android.util.Log
 import com.example.utils.OnSwipeTouchListener
 import android.graphics.Color
 import android.graphics.Typeface
@@ -116,13 +116,11 @@ class MainActivity : AppCompatActivity() {
       val screenWidth = Resources.getSystem().displayMetrics.widthPixels
       // Вычисляем соотношение максимальной ширины строки к ширине экрана
       val textWidthRatio = maxLineWidth / screenWidth
-      Log.d("FONT_SIZE", "Screen width is ${screenWidth}px")
-      Log.d("FONT_SIZE", "Max line width is ${maxLineWidth}px")
       // Если соотношение больше 1, то текст не влезает на экран
       if (textWidthRatio > 1) {
           // Уменьшаем размер текста на соответствующий коэффициент
           val textSizeRatio = 1 / textWidthRatio
-          textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio)
+          textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textView.textSize * textSizeRatio - 1f)
       }
       // Если первая строка имеет два символа, то
       if (firstLine?.length == 2) {
@@ -142,7 +140,6 @@ class MainActivity : AppCompatActivity() {
       } else {
           textView.text = text
       }
-      Log.d("FONT_SIZE", "Font size in setTextViewText is ${textView.textSize}")
   }
 
     private fun handleButton1Click() {
@@ -172,7 +169,6 @@ class MainActivity : AppCompatActivity() {
                 // обработчик свайпа вправо
                 val randomPhrase = getRandomPhrase()
                 textView.text = randomPhrase
-                Log.d("FONT_SIZE", "Font size in setTextViewText is ${textView.textSize}")
                 button1.visibility = View.GONE
                 button2.visibility = View.GONE
                 button3.visibility = View.GONE
